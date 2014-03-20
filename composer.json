@@ -1,0 +1,21 @@
+{
+    "name": "misaret/nomos-php",
+    "description": "Nomos Storage PHP library",
+	"keywords": ["storage"],
+	"homepage": "https://github.com/misaret/nomos-php",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Vitalii Khranivskyi",
+            "email": "misaret@gmail.com"
+        }
+    ],
+    "require": {
+		"php": ">=5.4.0"
+    },
+	"autoload": {
+		"psr-4": {
+			"misaret\\nomos\\": ""
+		}
+	}
+}
