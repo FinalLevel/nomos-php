@@ -25,6 +25,7 @@ class Session implements \SessionHandlerInterface
 	 * @var integer
 	 */
 	public $lifetime;
+	public $writeOnlyChanges = true;
 
 	/**
 	 * @var \misaret\nomos\Storage
@@ -32,6 +33,9 @@ class Session implements \SessionHandlerInterface
 	private $_storage;
 	private $_level;
 	private $_subLevel = 0;
+
+	private $_lastSessionId;
+	private $_lastSessionData;
 
 	/**
 	 * @param \misaret\nomos\Storage $storage
@@ -43,8 +47,9 @@ class Session implements \SessionHandlerInterface
 	{
 		$this->_storage = $storage;
 		$this->_level = $level;
-		if ($subLevel)
+		if ($subLevel) {
 			$this->_subLevel = $subLevel;
+		}
 		$this->lifetime = ($lifetime ? $lifetime : (int) ini_get('session.gc_maxlifetime'));
 	}
 
@@ -61,12 +66,15 @@ class Session implements \SessionHandlerInterface
 	/**
 	 * {@inheritdoc}
 	 *
-	 * @param string $session_id
+	 * @param string $sessionId
 	 * @return boolean
 	 */
-	public function destroy($session_id)
+	public function destroy($sessionId)
 	{
-		return $this->_storage->delete($this->_level, $this->_subLevel, $session_id);
+		$this->_lastSessionId = null;
+		$this->_lastSessionData = null;
+
+		return $this->_storage->delete($this->_level, $this->_subLevel, $sessionId);
 	}
 
 	/**
@@ -83,11 +91,11 @@ class Session implements \SessionHandlerInterface
 	/**
 	 * {@inheritdoc}
 	 *
-	 * @param string $save_path
+	 * @param string $savePath
 	 * @param string $name
 	 * @return boolean
 	 */
-	public function open($save_path, $name)
+	public function open($savePath, $name)
 	{
 		return true;
 	}
@@ -95,23 +103,37 @@ class Session implements \SessionHandlerInterface
 	/**
 	 * {@inheritdoc}
 	 * 
-	 * @param string $session_id
+	 * @param string $sessionId
 	 * @return string
 	 */
-	public function read($session_id)
+	public function read($sessionId)
 	{
-		return $this->_storage->get($this->_level, $this->_subLevel, $session_id, $this->lifetime);
+		$this->_lastSessionId = $sessionId;
+		$this->_lastSessionData = $this->_storage->get($this->_level, $this->_subLevel, $sessionId, $this->lifetime);
+
+		return $this->_lastSessionData;
 	}
 
 	/**
 	 * {@inheritdoc}
 	 *
-	 * @param string $session_id
-	 * @param string $session_data
+	 * @param string $sessionId
+	 * @param string $sessionData
 	 * @return boolean
 	 */
-	public function write($session_id, $session_data)
+	public function write($sessionId, $sessionData)
 	{
-		return $this->_storage->put($this->_level, $this->_subLevel, $session_id, $this->lifetime, $session_data);
+		if (
+			$this->writeOnlyChanges
+			&& $sessionId === $this->_lastSessionId
+			&& $sessionData === $this->_lastSessionData
+		) {
+			return true;
+		}
+
+		$this->_lastSessionId = $sessionId;
+		$this->_lastSessionData = $sessionData;
+
+		return $this->_storage->put($this->_level, $this->_subLevel, $sessionId, $this->lifetime, $sessionData);
 	}
 }
