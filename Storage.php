@@ -14,6 +14,11 @@ namespace misaret\nomos;
 class Storage
 {
 	/**
+	 * Protocol version
+	 */
+	const VERSION = 'V01';
+
+	/**
 	 * Array of server info
 	 * ~~~
 	 * [
@@ -87,11 +92,13 @@ class Storage
 	{
 		$key = static::buildKey($key);
 		$result = $this->_cmd($key, "G,$level,$subLevel,$key,$time");
-		if (!$result)
+		if (!$result) {
 			return false;
+		}
 
-		if (!$this->useSerialize)
+		if (!$this->useSerialize) {
 			return $result;
+		}
 
 		$data = unserialize($result);
 		if ($data === false) {
@@ -115,10 +122,32 @@ class Storage
 	public function put($level, $subLevel, $key, $time, $data)
 	{
 		$key = static::buildKey($key);
-		if ($this->useSerialize)
+		if ($this->useSerialize) {
 			$data = serialize($data);
+		}
 		$dataLen = strlen($data);
 		return $this->_cmd($key, "P,$level,$subLevel,$key,$time,$dataLen", $data);
+	}
+
+	/**
+	 * Update data.
+	 * If value of data the same then update only lifetime
+	 *
+	 * @param integer $level
+	 * @param integer $subLevel
+	 * @param string $key hexadecimal string, max length 16
+	 * @param integer $time
+	 * @param mixed $data
+	 * @return boolean
+	 */
+	public function update($level, $subLevel, $key, $time, $data)
+	{
+		$key = static::buildKey($key);
+		if ($this->useSerialize) {
+			$data = serialize($data);
+		}
+		$dataLen = strlen($data);
+		return $this->_cmd($key, "U,$level,$subLevel,$key,$time,$dataLen", $data);
 	}
 
 	/**
@@ -147,7 +176,22 @@ class Storage
 	public function delete($level, $subLevel, $key)
 	{
 		$key = static::buildKey($key);
-		return $this->_cmd($key, "P,$level,$subLevel,$key,0,0");
+		return $this->_cmd($key, "R,$level,$subLevel,$key");
+	}
+
+	/**
+	 * Creates a new top level of the index
+	 * ~~~
+	 * createTopLevel('level1', 'INT32', 'STRING')
+	 * ~~~
+	 * @param string $level
+	 * @param string $subLevelType
+	 * @param string $itemType
+	 * @return boolean
+	 */
+	public function createTopLevel($level, $subLevelType, $itemType)
+	{
+		return $this->_cmd(0, "C,$level,$subLevelType,$itemType");
 	}
 
 	/**
@@ -173,9 +217,10 @@ class Storage
 				}
 			}
 
-			if ($this->_fireEvent('beforeOpen') === false)
+			if ($this->_fireEvent('beforeOpen') === false) {
 				return false;
-			
+			}
+
 			$serverInfo = $this->servers[$currIndex];
 			$errno = $errstr = false;
 			$socket = @fsockopen($serverInfo['host'], $serverInfo['port'], $errno, $errstr, $this->timeout);
@@ -221,7 +266,7 @@ class Storage
 
 	private function _send($cmd, $data = null)
 	{
-		$buff = "$cmd\r\n\r\n$data";
+		$buff = "$cmd\n$data";
 		$len = strlen($buff);
 		$sent = fwrite($this->_sockets[$this->_currentSocketIndex], $buff, $len);
 		if ($len != $sent && $this->_open(true)) {
@@ -232,8 +277,9 @@ class Storage
 				trigger_error('Resend OK: ' . $cmd);
 			}
 		}
-		if ($len != $sent)
+		if ($len != $sent) {
 			return false;
+		}
 
 		fflush($this->_sockets[$this->_currentSocketIndex]);
 
@@ -242,16 +288,23 @@ class Storage
 
 	private function _readAnswer()
 	{
-		$result = $this->_socketRead(9);
-		if (!$result)
+		$result = $this->_socketRead(11);
+		if (!$result) {
 			return null;
+		}
 
-		if (!strncmp($result, 'ERR', 3))
+		if (!strncmp($result, 'ERR', 3)) {
+			if (!strncmp($result, 'ERR_CR', 6)) {
+				fclose($this->_sockets[$this->_currentSocketIndex]);
+				$this->_sockets[$this->_currentSocketIndex] = null;
+			}
 			return false;
+		}
 
 		$size = hexdec(substr($result, 0, -1));
-		if (!$size)
+		if (!$size) {
 			return true;
+		}
 
 		$result = $this->_socketRead($size);
 
@@ -261,8 +314,9 @@ class Storage
 	private function _cmd($key, $cmd, $data = null)
 	{
 		$this->lastCommand = compact('key', 'cmd');
-		if ($this->_fireEvent('beforeCommand') === false)
+		if ($this->_fireEvent('beforeCommand') === false) {
 			return false;
+		}
 
 		$this->_currentSocketIndex = $this->_keyToIndex($key);
 
@@ -273,10 +327,11 @@ class Storage
 				return false;
 			}
 
-			if ($this->_fireEvent('beforeSendCommand') === false)
+			if ($this->_fireEvent('beforeSendCommand') === false) {
 				return false;
+			}
 
-			$result = $this->_send($cmd, $data);
+			$result = $this->_send(static::VERSION . ',' . $cmd, $data);
 			if ($result) {
 				$result = $this->_readAnswer();
 				if ($result) {
@@ -306,8 +361,9 @@ class Storage
 
 	protected function _fireEvent($eventName)
 	{
-		if ($this->eventsFunc)
+		if ($this->eventsFunc) {
 			return call_user_func($this->eventsFunc, $eventName, $this);
+		}
 
 		return true;
 	}

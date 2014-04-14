@@ -134,6 +134,6 @@ class Session implements \SessionHandlerInterface
 		$this->_lastSessionId = $sessionId;
 		$this->_lastSessionData = $sessionData;
 
-		return $this->_storage->put($this->_level, $this->_subLevel, $sessionId, $this->lifetime, $sessionData);
+		return $this->_storage->update($this->_level, $this->_subLevel, $sessionId, $this->lifetime, $sessionData);
 	}
 }
