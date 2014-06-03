@@ -1,21 +1,21 @@
 <?php
 /**
- * @link https://github.com/misaret/nomos-php/
+ * @link https://github.com/FinalLevel/nomos-php/
  * @copyright Copyright (c) 2014 Vitalii Khranivskyi
  * @author Vitalii Khranivskyi <misaret@gmail.com>
  * @license LICENSE file
  */
 
-namespace misaret\nomos;
+namespace fl\nomos;
 
 /**
  * Nomos Storage session handler
  * ~~~
- * $storage = new \misaret\nomos\Storage([
+ * $storage = new \fl\nomos\Storage([
  *	['host' => '127.0.0.1', 'port' => '8986'],
  * ]);
  * $storage->useSerialize = false;
- * $handler = new \misaret\nomos\Session($storage, 1, 2);
+ * $handler = new \fl\nomos\Session($storage, 1, 2);
  * session_set_save_handler($handler);
  * ~~~
  */
@@ -28,7 +28,7 @@ class Session implements \SessionHandlerInterface
 	public $writeOnlyChanges = true;
 
 	/**
-	 * @var \misaret\nomos\Storage
+	 * @var \fl\nomos\Storage
 	 */
 	private $_storage;
 	private $_level;
@@ -38,7 +38,7 @@ class Session implements \SessionHandlerInterface
 	private $_lastSessionData;
 
 	/**
-	 * @param \misaret\nomos\Storage $storage
+	 * @param \fl\nomos\Storage $storage
 	 * @param integer $level
 	 * @param integer $subLevel
 	 * @param integer $lifetime

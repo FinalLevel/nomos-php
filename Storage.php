@@ -1,12 +1,12 @@
 <?php
 /**
- * @link https://github.com/misaret/nomos-php/
+ * @link https://github.com/FinalLevel/nomos-php/
  * @copyright Copyright (c) 2014 Vitalii Khranivskyi
  * @author Vitalii Khranivskyi <misaret@gmail.com>
  * @license LICENSE file
  */
 
-namespace misaret\nomos;
+namespace fl\nomos;
 
 /**
  * PHP library for work with Nomos Storage servers

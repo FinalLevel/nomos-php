@@ -1,12 +1,12 @@
 <?php
 /**
- * @link https://github.com/misaret/nomos-php/
+ * @link https://github.com/FinalLevel/nomos-php/
  * @copyright Copyright (c) 2014 Vitalii Khranivskyi
  * @author Vitalii Khranivskyi <misaret@gmail.com>
  * @license LICENSE file
  */
 
-namespace misaret\nomos;
+namespace fl\nomos;
 
 /**
  * PHP library for manage data record in Nomos Storage
@@ -37,7 +37,7 @@ class DataRecord
 	 * Constructor
 	 * @param string $key hexadecimal string, max length 16
 	 * @param array $data variable to load/save data
-	 * @param \misaret\nomos\Storage $storage
+	 * @param \fl\nomos\Storage $storage
 	 * @param integer $level
 	 * @param integer $subLevel
 	 * @param integer $lifetime

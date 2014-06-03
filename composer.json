@@ -1,8 +1,8 @@
 {
-    "name": "misaret/nomos-php",
+    "name": "FinalLevel/nomos-php",
     "description": "Nomos Storage PHP library",
 	"keywords": ["storage"],
-	"homepage": "https://github.com/misaret/nomos-php",
+	"homepage": "https://github.com/FinalLevel/nomos-php",
     "license": "MIT",
     "authors": [
         {
@@ -15,7 +15,7 @@
     },
 	"autoload": {
 		"psr-4": {
-			"misaret\\nomos\\": ""
+			"fl\\nomos\\": ""
 		}
 	}
 }
