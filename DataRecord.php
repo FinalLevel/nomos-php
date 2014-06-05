@@ -38,8 +38,8 @@ class DataRecord
 	 * @param string $key hexadecimal string, max length 16
 	 * @param array $data variable to load/save data
 	 * @param \fl\nomos\Storage $storage
-	 * @param integer $level
-	 * @param integer $subLevel
+	 * @param string $level
+	 * @param string $subLevel
 	 * @param integer $lifetime
 	 */
 	public function __construct($key, &$data, Storage $storage, $level, $subLevel = null, $lifetime = null)

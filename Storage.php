@@ -82,8 +82,8 @@ class Storage
 
 	/**
 	 * Get data
-	 * @param integer $level
-	 * @param integer $subLevel
+	 * @param string $level
+	 * @param string $subLevel
 	 * @param string $key hexadecimal string, max length 16
 	 * @param integer $time new life time, 0 - leave life time unchanged
 	 * @return mixed
@@ -112,8 +112,8 @@ class Storage
 	/**
 	 * Put data
 	 *
-	 * @param integer $level
-	 * @param integer $subLevel
+	 * @param string $level
+	 * @param string $subLevel
 	 * @param string $key hexadecimal string, max length 16
 	 * @param integer $time
 	 * @param mixed $data
@@ -133,8 +133,8 @@ class Storage
 	 * Update data.
 	 * If value of data the same then update only lifetime
 	 *
-	 * @param integer $level
-	 * @param integer $subLevel
+	 * @param string $level
+	 * @param string $subLevel
 	 * @param string $key hexadecimal string, max length 16
 	 * @param integer $time
 	 * @param mixed $data
@@ -153,8 +153,8 @@ class Storage
 	/**
 	 * Create empty data record
 	 *
-	 * @param integer $level
-	 * @param integer $subLevel
+	 * @param string $level
+	 * @param string $subLevel
 	 * @param string $key hexadecimal string, max length 16
 	 * @param integer $time
 	 * @return boolean
@@ -168,8 +168,8 @@ class Storage
 	/**
 	 * Delete data record
 	 *
-	 * @param integer $level
-	 * @param integer $subLevel
+	 * @param string $level
+	 * @param string $subLevel
 	 * @param string $key hexadecimal string, max length 16
 	 * @return boolean
 	 */

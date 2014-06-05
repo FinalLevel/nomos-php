@@ -39,8 +39,8 @@ class Session implements \SessionHandlerInterface
 
 	/**
 	 * @param \fl\nomos\Storage $storage
-	 * @param integer $level
-	 * @param integer $subLevel
+	 * @param string $level
+	 * @param string $subLevel
 	 * @param integer $lifetime
 	 */
 	public function __construct(Storage $storage, $level, $subLevel = null, $lifetime = null)
