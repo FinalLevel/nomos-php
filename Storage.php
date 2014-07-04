@@ -207,8 +207,8 @@ class Storage
 			$i < $countServers;
 			++$i, $currIndex = ($this->_currentSocketIndex + $i) % $countServers
 		) {
-			$socket = @$this->_sockets[$currIndex];
-			if ($socket) {
+			if (!empty($this->_sockets[$currIndex])) {
+				$socket = $this->_sockets[$currIndex];
 				if ($reopen) {
 					fclose($socket);
 				} else {
