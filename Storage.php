@@ -195,6 +195,18 @@ class Storage
 	}
 
 	/**
+	 * Clear all data for subLevel
+	 *
+	 * @param string $level
+	 * @param string $subLevel
+	 * @return boolean
+	 */
+	public function clearSubLevel($level, $subLevel)
+	{
+		return $this->_cmd(0, "V01,S,$level,$subLevel");
+	}
+
+	/**
 	 * Open connection to Nomos Storage servers
 	 * @param boolean $reopen Reopen socket
 	 * @return resource
