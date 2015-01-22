@@ -203,7 +203,7 @@ class Storage
 	 */
 	public function clearSubLevel($level, $subLevel)
 	{
-		return $this->_cmd(0, "V01,S,$level,$subLevel");
+		return $this->_cmd(0, "S,$level,$subLevel");
 	}
 
 	/**
